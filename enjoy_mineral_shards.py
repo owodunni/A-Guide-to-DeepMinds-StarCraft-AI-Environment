@@ -1,7 +1,6 @@
 import sys
 
-import baselines.common.tf_util as U
-import gflags as flags
+from absl import flags
 import numpy as np
 from baselines import deepq
 from pysc2.env import environment
@@ -9,6 +8,7 @@ from pysc2.env import sc2_env
 from pysc2.lib import actions
 from pysc2.lib import actions as sc2_actions
 from pysc2.lib import features
+from baselines.deepq.utils import BatchInput, load_state, save_state
 
 import deepq_mineral_shards
 
@@ -31,7 +31,7 @@ FLAGS = flags.FLAGS
 def main():
   FLAGS(sys.argv)
   with sc2_env.SC2Env(
-      "CollectMineralShards",
+      map_name="CollectMineralShards",
       step_mul=step_mul,
       visualize=True,
       game_steps_per_episode=steps * step_mul) as env:
@@ -43,7 +43,7 @@ def main():
     )
 
     def make_obs_ph(name):
-      return U.BatchInput((64, 64), name=name)
+      return BatchInput((64, 64), name=name)
 
     act_params = {
       'make_obs_ph': make_obs_ph,
